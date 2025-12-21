@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres:17
+    user: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dbd-25}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dbd-25}
+      POSTGRES_USER: ${POSTGRES_USER:-dbd-25}
+    ports:
+      - 5432:5432
