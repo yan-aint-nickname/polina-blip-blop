@@ -28,7 +28,7 @@ CREATE TABLE "Occupations" (
 -- Articles
 -- Constraint гарантирует, что при переименовании или удалении типа закона (например, "Уголовного") обрабатываются все связанные с ним статьи.
 CREATE TABLE "Articles" (
-    "Number" SMALLINT NOT NULL,
+    "Number" VARCHAR(10) NOT NULL,
     "LawType" VARCHAR(10) NOT NULL,
     "Name" TEXT NOT NULL,
     PRIMARY KEY ("Number", "LawType"),
@@ -43,7 +43,7 @@ CREATE INDEX "idx_cases_casenumber" ON "Cases" ("CaseNumber");
 -- Cases_Articles
 -- Constraint автоматически устраняется связь между законами и судебными делами, когда устраняется любая из сторон.
 CREATE TABLE "CasesArticles" (
-    "ArticleNumber" SMALLINT NOT NULL,
+    "ArticleNumber" VARCHAR(10) NOT NULL,
     "ArticleLawType" VARCHAR(10) NOT NULL,
     "CaseId" UUID NOT NULL,
     PRIMARY KEY ("ArticleNumber", "ArticleLawType", "CaseId"),
@@ -104,3 +104,7 @@ CREATE TABLE "AgentsOccupations" (
     FOREIGN KEY ("AgentId") REFERENCES "Agents"("Id"),
     FOREIGN KEY ("OccupationId") REFERENCES "Occupations"("Id")
 );
+
+
+ALTER TABLE "Occupations" 
+ADD CONSTRAINT unique_occupation_area UNIQUE ("Title", "Area");

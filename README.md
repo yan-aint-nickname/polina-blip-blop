@@ -10,11 +10,11 @@ Todo:
  - [x] Courts
  - [x] Cases
  - [x] Judges Cases
- - [ ] Occupations
- - [ ] Laws
- - [ ] Agents
+ - [x] Occupations
+ - [x] Laws
+ - [x] Aricles
+ - [ ] CasesArticles
+ - [x] Agents
  - [ ] AgentsCases
  - [ ] AgentsOccupations
- - [ ] Aricles
  - [ ] CourtsCases
- - [ ] CasesArticles
