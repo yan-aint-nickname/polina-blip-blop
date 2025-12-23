@@ -7,23 +7,29 @@ CREATE TABLE "Laws" (
     "Type" VARCHAR(10) PRIMARY KEY,
     "Title" TEXT NOT NULL,
     "StartDate" DATE NOT NULL,
-    "EndDate" DATE
+    "EndDate" DATE,
+    CONSTRAINT unique_laws_type_title_start_date UNIQUE ("Type", "Title", "StartDate"),
+    CONSTRAINT check_law_dates CHECK (
+        "EndDate" IS NULL
+        OR "EndDate" >= "StartDate"
+    )
 );
 -- Regions
 CREATE TABLE "Regions" (
     "Id" VARCHAR(3) PRIMARY KEY,
-    "Name" TEXT NOT NULL
+    "Name" TEXT NOT NULL UNIQUE
 );
 -- Judges
 CREATE TABLE "Judges" (
     "Id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "Name" TEXT NOT NULL UNIQUE
+    "Name" TEXT NOT NULL
 );
 -- Occupations
 CREATE TABLE "Occupations" (
     "Id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "Title" TEXT NOT NULL,
-    "Area" TEXT
+    "Area" TEXT,
+    CONSTRAINT unique_occupation_area UNIQUE ("Title", "Area")
 );
 -- Articles
 -- Constraint гарантирует, что при переименовании или удалении типа закона (например, "Уголовного") обрабатываются все связанные с ним статьи.
@@ -55,7 +61,8 @@ CREATE TABLE "Courts" (
     "Id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "Name" TEXT NOT NULL,
     "RegionId" VARCHAR(3) NOT NULL,
-    FOREIGN KEY ("RegionId") REFERENCES "Regions"("Id")
+    FOREIGN KEY ("RegionId") REFERENCES "Regions"("Id"),
+    CONSTRAINT unique_courts_name_region_id UNIQUE ("Name", "RegionId")
 );
 CREATE INDEX "idx_courts_regionid" ON "Courts" ("RegionId");
 -- Courts_Cases
@@ -77,7 +84,7 @@ CREATE TABLE "JudgesCases" (
     "CaseId" UUID NOT NULL,
     PRIMARY KEY ("JudgeId", "CaseId"),
     FOREIGN KEY ("JudgeId") REFERENCES "Judges"("Id"),
-    FOREIGN KEY ("CaseId") REFERENCES "Cases"("Id")
+    FOREIGN KEY ("CaseId") REFERENCES "Cases"("Id") ON DELETE CASCADE
 );
 -- Agents
 CREATE TABLE "Agents" (
@@ -86,7 +93,12 @@ CREATE TABLE "Agents" (
     "NumberFromMinyst" VARCHAR(8) NOT NULL,
     "Type" TEXT NOT NULL,
     "StartDate" DATE NOT NULL,
-    "EndDate" DATE
+    "EndDate" DATE,
+    CONSTRAINT check_agent_dates CHECK (
+        "EndDate" IS NULL
+        OR "EndDate" >= "StartDate"
+    ),
+    CONSTRAINT unique_name_number_from_minyst_type UNIQUE ("Name", "NumberFromMinyst", "Type")
 );
 -- Agents_Cases (исправлено имя таблицы, было JudgesCases)
 CREATE TABLE "AgentsCases" (
@@ -94,7 +106,7 @@ CREATE TABLE "AgentsCases" (
     "CaseId" UUID NOT NULL,
     PRIMARY KEY ("AgentId", "CaseId"),
     FOREIGN KEY ("AgentId") REFERENCES "Agents"("Id"),
-    FOREIGN KEY ("CaseId") REFERENCES "Cases"("Id")
+    FOREIGN KEY ("CaseId") REFERENCES "Cases"("Id") ON DELETE CASCADE
 );
 -- Agents_Occupations
 CREATE TABLE "AgentsOccupations" (
@@ -104,7 +116,3 @@ CREATE TABLE "AgentsOccupations" (
     FOREIGN KEY ("AgentId") REFERENCES "Agents"("Id"),
     FOREIGN KEY ("OccupationId") REFERENCES "Occupations"("Id")
 );
-
-
-ALTER TABLE "Occupations" 
-ADD CONSTRAINT unique_occupation_area UNIQUE ("Title", "Area");

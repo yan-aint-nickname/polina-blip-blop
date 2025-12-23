@@ -13,8 +13,8 @@ Todo:
  - [x] Occupations
  - [x] Laws
  - [x] Aricles
- - [ ] CasesArticles
+ - [x] CasesArticles
  - [x] Agents
- - [ ] AgentsCases
- - [ ] AgentsOccupations
- - [ ] CourtsCases
+ - [x] AgentsCases
+ - [x] AgentsOccupations
+ - [x] CourtsCases
